@@ -1,0 +1,300 @@
+.kbb-extension {
+  padding-top: 10px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+  background-color: #00161e;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.kbb-extension > * {
+  color: #f5f5f5;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.car-year-make-model {
+  text-align: center;
+}
+
+.kbb-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 15px;
+  gap: 10px;
+  margin: 10px;
+}
+
+.kbb-container > * {
+  padding: 10px;
+  vertical-align: middle;
+  background-color: #003256;
+  color: #f5f5f5;
+  font-size: small;
+}
+
+.listed-price-container {
+  display: flex;
+  align-items: center;
+  grid-column: span 2;
+  grid-row: span 2;
+  border-radius: 10px;
+}
+
+.listed-price-container > * {
+  flex: 1;
+}
+
+.listed-price {
+  text-align: right;
+}
+
+.fair-value-container {
+  display: flex;
+  align-items: center;
+  grid-column: span 2;
+  grid-row: span 2;
+  border-radius: 10px;
+}
+
+.fair-value-container > * {
+  flex: 1;
+}
+
+.fair-value {
+  text-align: right;
+}
+
+.price-difference-container {
+  grid-column: span 1;
+  grid-row: span 3;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.price-difference {
+  margin: 5px;
+}
+
+.percentage-difference-container {
+  grid-column: span 1;
+  grid-row: span 3;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.percentage-difference {
+  margin: 5px;
+}
+
+.listed-condition-container {
+  display: flex;
+  align-items: center;
+  grid-column: span 2;
+  grid-row: span 2;
+  border-radius: 10px;
+}
+
+.listed-condition-container > * {
+  flex: 1;
+}
+
+.listed-condition {
+  text-align: right;
+}
+
+#condition-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.condition-title {
+  text-align: center;
+  margin: 10px;
+}
+
+.condition-select {
+  flex: 1;
+  margin: 0 10px;
+  border-radius: 10px;
+  text-align: center;
+  padding: 2px;
+  background-color: #003256;
+  color: #f5f5f5;
+  border: none;
+  outline: none;
+}
+
+.body-styles-container {
+  max-height: 1000px;
+  transition: opacity 0.3s, max-height 0.5s ease 0.1s;
+  overflow: hidden;
+}
+
+.body-styles-container.removed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.body-styles-select-title,
+.no-match-title,
+.no-match-body {
+  text-align: center;
+}
+
+.body-styles-list-container {
+  border-radius: 10px;
+  background-color: #003256;
+  margin: 10px;
+  padding: 1px 10px;
+}
+
+.body-styles-option,
+.redirect-kbb {
+  border-radius: 10px;
+  margin: 10px 0px;
+  text-align: center;
+  padding: 4px;
+  color: #00161e;
+  background-color: #a6e3f4;
+}
+
+.redirect-kbb {
+  margin: 10px 30px;
+}
+
+.redirect-kbb:hover {
+  background-color: #f5f5f5;
+  transition: 0.2s;
+}
+
+.zip-code-container {
+  display: flex;
+  padding: 10px;
+  background-color: #00161e;
+}
+
+.zip-code-container * {
+  border-radius: 10px;
+  border: 1px solid black;
+  background-color: #f5f5f5;
+  color: #00161e;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.zip-code-input {
+  flex: 3;
+  margin-right: 10px;
+  text-align: right;
+  font-size: 11px;
+}
+
+.save-button {
+  flex: 1;
+  text-align: center;
+  padding-left: 10px;
+}
+
+.save-button:hover {
+  background-color: #a6e3f4;
+  transition: 0.2s;
+}
+
+.condition-and-kbb-price-advisor-container {
+  height: 0px;
+  transition: height 0.7s ease 0.7s;
+}
+
+.condition-and-kbb-price-advisor-container.expanded {
+  height: 376.656px;
+}
+
+.loader-wrapper {
+  width: 100%;
+  height: 90%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  /* top: 50%;                       ******* <- Remove this line ******** */
+  border: 4px solid #fff;
+  animation: loader 2s infinite ease;
+}
+
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(180deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  75% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-inner {
+  0% {
+    height: 0%;
+  }
+
+  25% {
+    height: 0%;
+  }
+
+  50% {
+    height: 100%;
+  }
+
+  75% {
+    height: 100%;
+  }
+
+  100% {
+    height: 0%;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: rgb(0, 50, 86);
+  }
+
+  100% {
+    background-color: hsl(200, 20%, 95%);
+  }
+}
+
+.skeleton {
+  height: 15px;
+  margin-left: 16px;
+  opacity: 0.7;
+  animation: skeleton-loading 1s linear infinite alternate;
+}
+
+.skeleton.price-difference,
+.skeleton.percentage-difference {
+  margin-left: 15px;
+  margin-right: 15px;
+}

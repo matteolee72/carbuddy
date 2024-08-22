@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "CarBuddy: Fair Values at a Glance on Craigslist",
+  "version": "1.0.2",
+  "action": {},
+  "description": "Quickly discover Kelley Blue Book (KBB) values directly within Craigslist car and truck listings to find good deals at a glance.",
+    "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+    },
+    "content_scripts": [
+        {
+          "css": ["components/styles.css"],
+          "js": ["scripts/content.js","offscreen.js"],
+          "matches": [
+            "*://*.craigslist.ca/*/cto/*",
+            "*://*.craigslist.com/*/cto/*",
+            "*://*.craigslist.org/*/cto/*",
+            "*://*.craigslist.ca/*/ctd/*",
+            "*://*.craigslist.com/*/ctd/*",
+            "*://*.craigslist.org/*/ctd/*",
+            "*://*.craigslist.ca/*/cta/*",
+            "*://*.craigslist.com/*/cta/*",
+            "*://*.craigslist.org/*/cta/*",
+            "*://*.craigslist.ca/cto/*",
+            "*://*.craigslist.com/cto/*",
+            "*://*.craigslist.org/cto/*",
+            "*://*.craigslist.org/cta/*",
+            "*://*.craigslist.org/ctd/*",
+            "*://*.craigslist.com/cto/*",
+            "*://*.craigslist.com/cta/*",
+            "*://*.craigslist.com/ctd/*",
+            "*://*.kbb.com/*"
+          ]
+        }
+      ],
+      "background": {
+        "service_worker": "service-worker.js",
+        "type": "module"
+      },
+      "web_accessible_resources": [
+        {
+          "resources": ["components/index.html"],
+          "matches": [
+            "*://*.craigslist.ca/*",
+            "*://*.craigslist.com/*",
+            "*://*.craigslist.org/*"
+          ]
+        }
+      ],
+      "permissions": ["offscreen","storage"]
+
+}

@@ -1,0 +1,70 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,600&display=swap"
+    rel="stylesheet"
+  />
+  <title>Kelly Blue Books</title>
+  <style>
+    table {
+      border: 1px solid black; /* Add black border */
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th,
+    td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<div class="kbb-extension">
+  <div class="car-year-make-model-container">
+    <h2 class="car-year-make-model">Kelly Blue Books</h2>
+  </div>
+  <div class="kbb-container">
+    <div class="listed-price-container">
+      <div>Listed Price</div>
+      <div class="listed-price">-</div>
+    </div>
+    <div class="fair-value-container">
+      <div>Fair Value</div>
+      <div class="fair-value">-</div>
+    </div>
+    <div class="price-difference-container">
+      <div>Difference</div>
+      <div class="price-difference">-</div>
+    </div>
+    <div class="percentage-difference-container">
+      <div>Percentage</div>
+      <div class="percentage-difference">-</div>
+    </div>
+    <div class="listed-condition-container">
+      <div>Listed Condition</div>
+      <div class="listed-condition">-</div>
+    </div>
+  </div>
+  <div class="body-styles-container">
+  </div>
+  <div class="condition-and-kbb-price-advisor-container">
+    <div id="condition-container"></div>
+    <div id="kbb-price-advisor"></div>
+    <div class="loader-wrapper">
+      <span class="loader"><span class="loader-inner"></span></span>
+    </div>
+  </div>
+  <div class="zip-code-container">
+    <input
+      class="zip-code-input"
+      placeholder="ZIP Code"
+      type="number"
+      min="0"
+    />
+    <button class="save-button">Save</button>
+  </div>
+</div>
