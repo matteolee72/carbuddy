@@ -1,4 +1,4 @@
-import { getMakeModel } from "./scripts/make-model-handler.js";
+import { getMakeModel } from "./utils/make-model-handler.js";
 
 const OFFSCREEN_DOCUMENT_PATH = "components/offscreen.html";
 
@@ -100,7 +100,11 @@ async function fetchHtmlDataFromKbbStyles(allCarDetails) {
     const fullUrl = `${baseUrl}?${searchParams.toString()}`;
     console.log(fullUrl);
     console.log(allCarDetails);
-    const response = await fetch(fullUrl);
+    const response = await fetch(fullUrl, {
+      headers: {
+        "Cache-Control": "no-cache",
+      },
+    });
     const kbbHtml = await response.text(); // Get the HTML content as text
 
     if (!response.ok) {
@@ -221,7 +225,7 @@ async function handleOptionsNotRequired(response) {
   // Get the final URL from the response headers
   const finalURL = response.url;
   console.log("Final URL after redirection:", finalURL);
-  if (finalURL == "https://www.kbb.com/car-prices/"){
+  if (finalURL == "https://www.kbb.com/car-prices/") {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { type: "errorFetchingBodyStyles" });
       console.log("error fetching body styles from kbb");
@@ -230,19 +234,14 @@ async function handleOptionsNotRequired(response) {
   }
   const modifiedURL = transformURLFirstCase(finalURL);
   console.log("modified URL from first case:" + modifiedURL);
-  const kbbHtmlFinal = await fetchHtmlDataFromKbbDirect(
-    modifiedURL
-  );
-  
+  const kbbHtmlFinal = await fetchHtmlDataFromKbbDirect(modifiedURL);
+
   const bodyStyle = extractBodyStyle(modifiedURL);
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { type: "setBodyStyle",bodyStyle });
+    chrome.tabs.sendMessage(tabs[0].id, { type: "setBodyStyle", bodyStyle });
   });
 
-  await sendKbbHtmlToOffscreenDocument(
-    "retrieve-svg-object-url",
-    kbbHtmlFinal
-  );
+  await sendKbbHtmlToOffscreenDocument("retrieve-svg-object-url", kbbHtmlFinal);
 }
 
 const parameters = {
@@ -401,13 +400,13 @@ function transformURLFirstCase(inputURL) {
 
 async function fetchHtmlDataFromKbbDirect(url) {
   try {
-    console.log('setting from KBB Direct')
+    console.log("setting from KBB Direct");
     const res = await chrome.storage.local.get("zipCode");
     const zipCode = res.zipCode ? res.zipCode : "";
     if (zipCode !== "") {
       console.log("setting zipcode now!!!", zipCode);
-      const zipCodeParam = '&zipcode=' + zipCode;
-      url+=zipCodeParam;
+      const zipCodeParam = "&zipcode=" + zipCode;
+      url += zipCodeParam;
     }
     const fullUrl = url;
     console.log("fullURL via Direct is:", fullUrl);
@@ -433,14 +432,14 @@ function extractBodyStyle(url) {
     const pathname = urlObj.pathname;
 
     // Split the pathname into segments
-    const segments = pathname.split('/');
+    const segments = pathname.split("/");
 
     // The body style is the last non-empty segment
-    const bodyStyle = segments.filter(segment => segment !== "").pop();
+    const bodyStyle = segments.filter((segment) => segment !== "").pop();
 
     return bodyStyle;
   } catch (error) {
-    console.error('Invalid URL:', error);
+    console.error("Invalid URL:", error);
     return null;
   }
 }

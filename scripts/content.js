@@ -254,6 +254,7 @@ chrome.runtime.onMessage.addListener((message) => {
     bodyStyle = message.bodyStyle;
   }
   if (message.type === "errorFetchingBodyStyles") {
+    console.log("error fetching body styles from kbb");
     handleErrorFetchingBodyStyles();
   }
 });
@@ -323,7 +324,7 @@ function insertBodyStylesList(styles) {
     styleDiv.classList.add("body-styles-option");
     styleDiv.target = "_blank";
     styleDiv.onclick = () => {
-      addSkeletonClass()
+      addSkeletonClass();
       extensionContainer.classList.add("expanded");
       bodyStyle = style;
       console.log(styleDiv.textContent);
@@ -420,6 +421,5 @@ function handleErrorFetchingBodyStyles() {
   redirectKbb.onclick = () => {
     window.open("https://www.kbb.com/car-prices/", "_blank");
   };
-  // redirectKbb.onclick = () => {}
   bodyStylesContainer.appendChild(redirectKbb);
 }
