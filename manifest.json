@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "CarBuddy: Fair Values at a Glance on Craigslist",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "action": {},
   "description": "Quickly discover Kelley Blue Book (KBB) values directly within Craigslist car and truck listings to find good deals at a glance.",
     "icons": {
@@ -13,7 +13,7 @@
     "content_scripts": [
         {
           "css": ["components/styles.css"],
-          "js": ["scripts/content.js","offscreen.js"],
+          "js": ["scripts/content.js","scripts/chat.js","offscreen.js"],
           "matches": [
             "*://*.craigslist.ca/*/cto/*",
             "*://*.craigslist.com/*/cto/*",
@@ -42,7 +42,7 @@
       },
       "web_accessible_resources": [
         {
-          "resources": ["components/index.html"],
+          "resources": ["components/index.html","components/chat.html"],
           "matches": [
             "*://*.craigslist.ca/*",
             "*://*.craigslist.com/*",

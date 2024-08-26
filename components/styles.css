@@ -298,3 +298,17 @@
   margin-left: 15px;
   margin-right: 15px;
 }
+
+.chat-popup {
+  position: fixed; /* Positions the div relative to the viewport */
+  bottom: 0; /* Aligns the div to the bottom of the viewport */
+  right: 0; /* Aligns the div to the right of the viewport */
+  width: 20vw; /* Sets the width to 20% of the viewport width */
+  height: 20vh; /* Sets the height to 20% of the viewport height */
+  background-color: rgba(0, 0, 0, 0.8); /* Optional: Sets a semi-transparent background color */
+  color: white; /* Optional: Sets text color to white */
+  z-index: 9999; /* Ensures the div floats above all other content */
+  padding: 10px; /* Optional: Adds some padding inside the div */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Optional: Adds a shadow to give a floating effect */
+  border-radius: 8px; /* Optional: Adds rounded corners */
+}
