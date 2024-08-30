@@ -29,41 +29,38 @@ function generateCarIssuePrompt(price, yearMakeModel, odometer) {
       of $low - $high for each repair, from lowest at a good value mechanic to highest at the dealership in the East Bay area. 
       Please also include the mileage that the car typically experiences the issue as x-y miles. 
   
-      Always format each issue in one line with the following categories in this exact format as such:
-      Name: (Name), Frequency: (Very/Moderate/Low), Severity: (Extreme/Moderate/Low), 
+      No need to number the issues, no need to give notes or disclaimers. Always format each issue in one line with the following categories in this exact format as such:
+      Name: (Name), Frequency: (High/Moderate/Low), Severity: (Extreme/Moderate/Low), 
       Repair Cost: $(low) - $(high), Mileage: (x-y) miles, Description: (Description Text).
     `;
 }
 
 async function fetchCarIssues(prompt) {
   try {
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=[key here]",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: prompt,
-                },
-              ],
-            },
-          ],
-        }),
-      }
-    );
+    const response = await fetch("https://carbuddy-oldzui4qxa-uw.a.run.app", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
+      }),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching car issues:", error);
@@ -73,16 +70,7 @@ async function fetchCarIssues(prompt) {
 
 function parseCarIssues(responseData) {
   try {
-    const candidates = responseData?.candidates;
-    if (!candidates || candidates.length === 0) {
-      throw new Error("No candidates found in the response.");
-    }
-
-    const contentText = candidates[0]?.content?.parts[0]?.text;
-    if (!contentText) {
-      throw new Error("No text found in the response content.");
-    }
-
+    const contentText = responseData.geminiData;
     return contentText;
   } catch (error) {
     console.error("Error parsing car issues:", error);
@@ -147,7 +135,7 @@ function extractIssueDetails(text) {
       if (repairCostStart !== -1) {
         repairCostStart = repairCostStart + "Repair Cost:".length;
         let repairCostEnd = line.indexOf("Mileage:", repairCostStart);
-        issueDetails["Repair Cost"] = line
+        issueDetails["RepairCost"] = line
           .substring(repairCostStart, repairCostEnd)
           .replace(/[,\.\s]+$/, "")
           .trim();
@@ -175,7 +163,9 @@ function extractIssueDetails(text) {
       issues.push(issueDetails);
     }
     if (line.trim().startsWith("**")) {
-      currentCategory = line.replace(/^\*\*|\*\*$/g, "").trim();
+      currentCategory = line
+        .replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, "")
+        .trim();
     }
   });
   return issues;
@@ -264,6 +254,13 @@ const responseText2 = `
 `;
 
 async function run() {
+  await fetch(chrome.runtime.getURL("components/chat.html"))
+    .then((r) => r.text())
+    .then((html) => {
+      console.log("hello inserting chat");
+      document.body.insertAdjacentHTML("beforeend", html); // extension html inserted, can manipulate AFTER this line
+    });
+
   const carDetails = await getCarDetails();
   if (!carDetails || carDetails.length === 0) {
     console.error("No car details available.");
@@ -282,32 +279,83 @@ async function run() {
   const prompt = generateCarIssuePrompt(price, yearMakeModel, odometer);
   console.log("Generated Prompt:", prompt);
 
-  const response = await fetchCarIssues(prompt);
-  if (!response) {
-    console.error("Failed to fetch car issues.");
-    return;
-  }
+    const response = await fetchCarIssues(prompt);
+    if (!response) {
+      console.error("Failed to fetch car issues.");
+      return;
+    }
 
-  const carIssuesText = parseCarIssues(response);
-  if (carIssuesText) {
-    console.log(carIssuesText);
-  } else {
-    console.error("Failed to parse car issues.");
-  }
+    const carIssuesText = parseCarIssues(response);
+    if (carIssuesText) {
+      console.log(carIssuesText);
+    } else {
+      console.error("Failed to parse car issues.");
+    }
 
   const issueDetails = extractIssueDetails(carIssuesText);
   console.log(issueDetails);
+  createIssues(issueDetails);
 }
 
 run();
 
-const htmlBody = true;
-// `document.querySelector` may return null if the selector doesn't match anything.
-if (htmlBody) {
-  fetch(chrome.runtime.getURL("components/chat.html"))
-    .then((r) => r.text())
-    .then((html) => {
-      console.log("hello inserting chat");
-      document.body.insertAdjacentHTML("beforeend", html); // extension html inserted, can manipulate AFTER this line
+function createIssues(issueDetails) {
+  const chatInsights = document.querySelector(".chat-insights");
+  let categories = [];
+  for (issue of issueDetails) {
+    if (!categories.includes(issue.Category)) {
+      categories.push(issue.Category);
+      const issueCategory = document.createElement("div");
+      issueCategory.classList.add("issue-category");
+
+      const issueCategoryTitle = document.createElement("h2");
+      issueCategoryTitle.classList.add("issue-category-title");
+      issueCategoryTitle.textContent = issue.Category;
+      issueCategory.appendChild(issueCategoryTitle);
+
+      chatInsights.appendChild(issueCategory);
+    }
+
+    const chatIssue = document.createElement("div");
+    chatIssue.classList.add("chat-issue");
+    if (issue.Frequency.toLowerCase() === "high") {
+      chatIssue.classList.add("high-frequency");
+    } else if (issue.Frequency.toLowerCase() === "moderate") {
+      chatIssue.classList.add("moderate-frequency");
+    }
+
+    const issueTitle = document.createElement("h3");
+    issueTitle.classList.add("issue-title");
+    issueTitle.textContent =
+      issue.Severity.toLowerCase() === "extreme"
+        ? "🚨 " + issue.Issue
+        : issue.Issue;
+    chatIssue.appendChild(issueTitle);
+
+    const issueBody = document.createElement("div");
+    issueBody.classList.add("issue-body");
+    issueBody.innerHTML = `
+      <p>Frequency: ${issue.Frequency}</p>
+      <p>Severity: ${issue.Severity}</p>
+      <p>Repair Cost: ${issue.RepairCost}</p>
+      <p>Mileage: ${issue.Mileage}</p>
+      <p class="issue-description">${issue.Description}</p>
+    `;
+    chatIssue.appendChild(issueBody);
+
+    chatIssue.addEventListener("click", () => {
+      issueBody.style.display =
+        issueBody.style.display === "none" ? "block" : "none";
     });
+
+    const existingCategory = Array.from(
+      chatInsights.getElementsByClassName("issue-category")
+    ).find(
+      (cat) =>
+        cat.querySelector(".issue-category-title").textContent ===
+        issue.Category
+    );
+
+    existingCategory.appendChild(chatIssue);
+  }
 }

@@ -8,7 +8,22 @@ if (body) {
       heading.insertAdjacentHTML("beforebegin", html); // extension html inserted, can manipulate AFTER this line
       setZipCodeButton();
       svgLoadingAnimationHandler();
+      addMontserratFontFace();
     });
+}
+
+function addMontserratFontFace() {
+  const fontURL = chrome.runtime.getURL('assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf');
+  const style = document.createElement('style');
+  style.textContent = `
+      @font-face {
+          font-family: 'Montserrat';
+          font-style: normal;
+          font-weight: 400;
+          src: url('${fontURL}');
+      }
+  `;
+  document.head.appendChild(style);
 }
 
 function svgLoadingAnimationHandler() {

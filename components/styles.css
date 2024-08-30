@@ -11,7 +11,7 @@
   color: #f5f5f5;
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 800;
   font-style: normal;
 }
 
@@ -303,12 +303,76 @@
   position: fixed; /* Positions the div relative to the viewport */
   bottom: 0; /* Aligns the div to the bottom of the viewport */
   right: 0; /* Aligns the div to the right of the viewport */
-  width: 20vw; /* Sets the width to 20% of the viewport width */
-  height: 20vh; /* Sets the height to 20% of the viewport height */
-  background-color: rgba(0, 0, 0, 0.8); /* Optional: Sets a semi-transparent background color */
+  width: 25vw; /* Sets the width to 20% of the viewport width */
+  height: 40vh; /* Sets the height to 20% of the viewport height */
+  background-color: #00161e; /* Optional: Sets a semi-transparent background color */
   color: white; /* Optional: Sets text color to white */
   z-index: 9999; /* Ensures the div floats above all other content */
   padding: 10px; /* Optional: Adds some padding inside the div */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Optional: Adds a shadow to give a floating effect */
   border-radius: 8px; /* Optional: Adds rounded corners */
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  font-size: large;
+  text-align: center;
+}
+
+.chat-popup > * {
+  color: #f5f5f5;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.issue-category-title {
+  font-size: medium;
+  text-align: center;
+  margin: 4px 0px;
+}
+
+.chat-issue {
+  font-size: small;
+  text-align: center;
+  background-color: #003256;
+  border-radius: 8px;
+  padding: 4px;
+  margin: 8px 4px;
+}
+
+.chat-issue:hover {
+  filter: brightness(120%);
+}
+
+.issue-title {
+  font-size: medium;
+  margin: 4px 0px;
+}
+
+.issue-body {
+  font-weight: 300;
+  display: none;
+}
+
+p.issue-description {
+  margin: 6px;
+}
+
+.chat-body {
+  flex: 1; /* Takes up remaining space */
+  overflow-y: auto; /* Allows vertical scrolling */
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #f5f5f570 #00161e;
+}
+
+.high-frequency {
+  background-color: #560000;
+}
+
+.moderate-frequency {
+  background-color: #563e00;
 }
