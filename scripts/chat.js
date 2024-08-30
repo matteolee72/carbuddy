@@ -29,7 +29,9 @@ function generateCarIssuePrompt(price, yearMakeModel, odometer) {
       of $low - $high for each repair, from lowest at a good value mechanic to highest at the dealership in the East Bay area. 
       Please also include the mileage that the car typically experiences the issue as x-y miles. 
   
-      No need to number the issues, no need to give notes or disclaimers. Always format each issue in one line with the following categories in this exact format as such:
+      No need to number the issues, no need to give notes or disclaimers. Label each category with ** and each issue with *.
+      
+      Always format each issue in one line with the following categories in this exact format as such:
       Name: (Name), Frequency: (High/Moderate/Low), Severity: (Extreme/Moderate/Low), 
       Repair Cost: $(low) - $(high), Mileage: (x-y) miles, Description: (Description Text).
     `;
@@ -279,18 +281,18 @@ async function run() {
   const prompt = generateCarIssuePrompt(price, yearMakeModel, odometer);
   console.log("Generated Prompt:", prompt);
 
-    const response = await fetchCarIssues(prompt);
-    if (!response) {
-      console.error("Failed to fetch car issues.");
-      return;
-    }
+  const response = await fetchCarIssues(prompt);
+  if (!response) {
+    console.error("Failed to fetch car issues.");
+    return;
+  }
 
-    const carIssuesText = parseCarIssues(response);
-    if (carIssuesText) {
-      console.log(carIssuesText);
-    } else {
-      console.error("Failed to parse car issues.");
-    }
+  const carIssuesText = parseCarIssues(response);
+  if (carIssuesText) {
+    console.log(carIssuesText);
+  } else {
+    console.error("Failed to parse car issues.");
+  }
 
   const issueDetails = extractIssueDetails(carIssuesText);
   console.log(issueDetails);
@@ -301,6 +303,12 @@ run();
 
 function createIssues(issueDetails) {
   const chatInsights = document.querySelector(".chat-insights");
+  const chatBody = document.querySelector(".chat-body");
+  const chatHeader = document.querySelector(".chat-header");
+  chatHeader.addEventListener("click", () => {
+    chatBody.style.display =
+      chatBody.style.display === "none" ? "block" : "none";
+  });
   let categories = [];
   for (issue of issueDetails) {
     if (!categories.includes(issue.Category)) {

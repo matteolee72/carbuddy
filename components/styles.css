@@ -303,8 +303,7 @@
   position: fixed; /* Positions the div relative to the viewport */
   bottom: 0; /* Aligns the div to the bottom of the viewport */
   right: 0; /* Aligns the div to the right of the viewport */
-  width: 25vw; /* Sets the width to 20% of the viewport width */
-  height: 40vh; /* Sets the height to 20% of the viewport height */
+  width: 25vw; /* Sets the width to 20% of the viewport width */ /* Sets the height to 20% of the viewport height */
   background-color: #00161e; /* Optional: Sets a semi-transparent background color */
   color: white; /* Optional: Sets text color to white */
   z-index: 9999; /* Ensures the div floats above all other content */
@@ -362,11 +361,13 @@ p.issue-description {
 }
 
 .chat-body {
-  flex: 1; /* Takes up remaining space */
+  /* Takes up remaining space */
+  /* flex: 1;  */
   overflow-y: auto; /* Allows vertical scrolling */
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: #f5f5f570 #00161e;
+  height: 40vh;
 }
 
 .high-frequency {
