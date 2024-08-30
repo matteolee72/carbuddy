@@ -222,6 +222,10 @@
   align-items: center;
 }
 
+.chat-body > .loader-wrapper{
+  display: flex;
+}
+
 .loader {
   display: inline-block;
   width: 30px;
@@ -312,6 +316,7 @@
   border-radius: 8px; /* Optional: Adds rounded corners */
   display: flex;
   flex-direction: column;
+  margin: 4px;
 }
 
 .chat-header {
@@ -321,6 +326,7 @@
   position: relative;
   font-size: large;
   text-align: center;
+  padding-bottom: 8px;
 }
 
 .header-text {
@@ -376,13 +382,11 @@ p.issue-description {
 }
 
 .chat-body {
-  /* Takes up remaining space */
-  /* flex: 1;  */
   overflow-y: auto; /* Allows vertical scrolling */
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: #f5f5f570 #00161e;
-  height: 40vh;
+  height: 45vh;
 }
 
 .high-frequency {

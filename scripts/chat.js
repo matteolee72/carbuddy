@@ -367,5 +367,12 @@ function createIssues(issueDetails) {
     );
 
     existingCategory.appendChild(chatIssue);
+    hideLoader();
   }
+}
+
+function hideLoader() {
+  const chatBody = document.querySelector(".chat-body");
+  const loaderWrapper = chatBody.querySelector(".loader-wrapper");
+  loaderWrapper.style.display = "none";
 }

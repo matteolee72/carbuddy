@@ -13,7 +13,7 @@ if (body) {
 }
 
 function addMontserratFontFace() {
-  const fontURL = chrome.runtime.getURL('assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf');
+  const fontURL = chrome.runtime.getURL('assets/fonts/Montserrat-VariableFont_wght.ttf');
   const style = document.createElement('style');
   style.textContent = `
       @font-face {
