@@ -305,9 +305,11 @@ function createIssues(issueDetails) {
   const chatInsights = document.querySelector(".chat-insights");
   const chatBody = document.querySelector(".chat-body");
   const chatHeader = document.querySelector(".chat-header");
+  const minimizeIcon = document.querySelector(".minimize-icon");
   chatHeader.addEventListener("click", () => {
     chatBody.style.display =
       chatBody.style.display === "none" ? "block" : "none";
+    minimizeIcon.textContent = minimizeIcon.textContent === "🔼" ? "🔽" : "🔼";
   });
   let categories = [];
   for (issue of issueDetails) {

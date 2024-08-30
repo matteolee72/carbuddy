@@ -315,8 +315,23 @@
 }
 
 .chat-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
   font-size: large;
   text-align: center;
+}
+
+.header-text {
+  flex-grow: 1;
+}
+
+.minimize-icon {
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+  padding-right: 10px; /* Adjust this value for spacing */
 }
 
 .chat-popup > * {
