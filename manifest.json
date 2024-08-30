@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "CarBuddy: Fair Values at a Glance on Craigslist",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "action": {},
   "description": "Quickly discover Kelley Blue Book (KBB) values directly within Craigslist car and truck listings to find good deals at a glance.",
     "icons": {
