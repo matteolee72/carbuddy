@@ -1,0 +1,29 @@
+name: Remove console.log and push to master-prod
+
+on:
+  push:
+    branches: [main,master]
+
+jobs:
+  remove-console-logs:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code from the master branch
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Remove console.log statements
+      - name: Remove console.log statements
+        run: |
+          find . -name "*.js" -o -name "*.ts" | xargs sed -i '/console\.log/d'
+
+      # Step 3: Commit and push changes to main-prod branch
+      - name: Push changes to master-prod
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git checkout -b master-prod
+          git add .
+          git commit -m "Remove console.log statements"
+          git push --force origin master-prod
