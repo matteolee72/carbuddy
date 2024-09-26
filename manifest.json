@@ -3,7 +3,7 @@
   "name": "CarBuddy: Talk to Cars with AI",
   "version": "2.1.0",
   "action": {},
-  "description": "Car Buddy is an AI-powered assistant for navigating Craigslist for vehicles. Make an informed decision with both Kelley Blue Books (KBB) and AI!",
+  "description": "Car Buddy, an AI-powered assistant for navigating Craigslist for cars. Make informed decisions with Kelley Blue Books (KBB) and AI!",
     "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
