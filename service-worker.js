@@ -47,10 +47,6 @@ async function handleMessages(message) {
         "retrieve-svg-object-url",
         kbbHtmlFinal
       );
-      // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      //   chrome.tabs.sendMessage(tabs[0].id, { type: "conditionDropdown" });
-      //   console.log("message to content.js to insert condition slider");
-      // });
       break;
     case "selectedCondition":
       console.log("condition is", message.condition);
@@ -173,12 +169,6 @@ async function fetchHtmlDataFromKbbBodyStyleSelected(style) {
 
 async function fetchHtmlDataFromKbbConditionSelected(condition, style) {
   try {
-    console.log(
-      "fetching data with condition selected: ",
-      condition,
-      " and style: ",
-      style
-    );
     const conditionString = condition.toLowerCase().replace(/\s+/g, "-");
     console.log("conditionString:", conditionString);
     const url = "https://www.kbb.com/";
@@ -292,38 +282,6 @@ async function hasDocument() {
   return false;
 }
 
-/*
-function handleSelectBodyStyle(kbbHtml){
-querySelector to get the body styles
-send to content (listener waiting on content)
-content.js > display the body styles in the extension using a variable length list dropdown (in the future, auto select most common body style)
-}
-
-handleMessage function new case:
-body-style-selected
-make new URL and fetch again, continue same flow from here onwards
-*/
-
-//TODO how to handle special cases e.g for BMW 320i means 3-series then select later. what about other cars?
-// make sure car model, you take everything after the make and '-' replace spaces
-
-// 1st case gives you exact body style (just add remaining params and resend)
-// this returns https://www.kbb.com/bmw/x5-m/2018/sport-utility-4d/options/?intent=trade-in-sell&mileage=90000&vehicleid=433777
-// you get vehicleid, model. remove options, add in condition, extcolor, pricetype=private-party,intent and subintent
-// fetch('https://www.kbb.com/bmw/x5-m/2018/styles/?intent=buy-used&mileage=90000')
-//   .then(response => {
-//     // Check if response is a redirect
-//     if (response.redirected) {
-//       // Get the final URL from the response headers
-//       const finalURL = response.url;
-//       console.log('Final URL 1st case:', finalURL);
-//     }
-//   })
-//   .catch(error => {
-//     console.error('Error:', error);
-//   });
-
-// 2nd case does not redirect, category first then body style (allow user to select sedan styles, otherwise direct them to kbb.com)
 fetch(
   "https://www.kbb.com/bmw/4-series/2018/styles/?intent=buy-used&mileage=180000"
 )
