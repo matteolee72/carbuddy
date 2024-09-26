@@ -222,7 +222,7 @@
   align-items: center;
 }
 
-.chat-body > .loader-wrapper{
+.chat-body > .loader-wrapper {
   display: flex;
 }
 
@@ -337,7 +337,7 @@
   position: absolute;
   right: 0;
   cursor: pointer;
-  padding-right: 10px; /* Adjust this value for spacing */
+  padding-right: 10px;
 }
 
 .chat-popup > * {
@@ -395,4 +395,38 @@ p.issue-description {
 
 .moderate-frequency {
   background-color: #563e00;
+}
+
+
+.chat-input-container {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  background-color: #00161e;
+  padding: 4px;
+  padding-top: 8px;
+}
+
+textarea {
+  background-color: #003256;
+  color: #f5f5f5;
+  border-radius: 4px;
+  border-color: #003256;
+  width: 100%;
+  min-height: 40px;  /* Initial height */
+  max-height: 120px; /* Maximum height before scrolling */
+  overflow-y: auto;  /* Enable vertical scrolling after max height is reached */
+  resize: none;      /* Prevent the user from manually resizing the textarea */
+  box-sizing: border-box;  /* Ensure padding and border are within the defined width */
+}
+
+.send-button {
+  font-size: 40px;
+  width: 40px;
+  height: 40px; 
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;         
 }

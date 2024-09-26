@@ -260,7 +260,8 @@ async function run() {
     .then((r) => r.text())
     .then((html) => {
       console.log("hello inserting chat");
-      document.body.insertAdjacentHTML("beforeend", html); // extension html inserted, can manipulate AFTER this line
+      document.body.insertAdjacentHTML("beforeend", html);
+      minimizeButton();
     });
 
   const carDetails = await getCarDetails();
@@ -290,6 +291,8 @@ async function run() {
   const carIssuesText = parseCarIssues(response);
   if (carIssuesText) {
     console.log(carIssuesText);
+    conversation.push(prompt);
+    conversation.push(carIssuesText);
   } else {
     console.error("Failed to parse car issues.");
   }
@@ -301,16 +304,22 @@ async function run() {
 
 run();
 
-function createIssues(issueDetails) {
-  const chatInsights = document.querySelector(".chat-insights");
+function minimizeButton() {
   const chatBody = document.querySelector(".chat-body");
   const chatHeader = document.querySelector(".chat-header");
+  const chatInputContainer = document.querySelector(".chat-input-container");
   const minimizeIcon = document.querySelector(".minimize-icon");
   chatHeader.addEventListener("click", () => {
     chatBody.style.display =
       chatBody.style.display === "none" ? "block" : "none";
+    chatInputContainer.style.display =
+      chatInputContainer.style.display === "none" ? "flex" : "none";
     minimizeIcon.textContent = minimizeIcon.textContent === "🔼" ? "🔽" : "🔼";
   });
+}
+
+function createIssues(issueDetails) {
+  const chatInsights = document.querySelector(".chat-insights");
   let categories = [];
   for (issue of issueDetails) {
     if (!categories.includes(issue.Category)) {
@@ -375,4 +384,38 @@ function hideLoader() {
   const chatBody = document.querySelector(".chat-body");
   const loaderWrapper = chatBody.querySelector(".loader-wrapper");
   loaderWrapper.style.display = "none";
+}
+
+let conversation = [];
+
+const introPrompt = `
+you are Car Buddy, an AI car expert that advises the user on the specific car model 
+they are currently viewing. Here is the conversation you guys have had. Please answer 
+the following question whilst taking context from the past conversation.`;
+
+function sendMessage() {
+  // if there is something in the text area that is not just spaces
+  const messageText = document.querySelector(".chat-input").value.trim();
+  if (messageText) {
+    const messagePrompt = generateMessagePrompt(
+      introPrompt,
+      conversation,
+      messageText
+    );
+    document.querySelector(".chat-input").value = "";
+    console.log(messagePrompt);
+  }
+  // reset the text area to nothing
+  // disable send button until response has been received
+  // handleChatResponse()
+}
+
+function handleChatResponse() {
+  // populate response into the chat
+  // add response and user input into the global conversation string properly formatted
+}
+
+function generateMessagePrompt(introPrompt, conversation, message) {
+  // take intro, conversation, current question, combine
+  // cut off from the back based on the max token length we want to allow.
 }
