@@ -430,3 +430,24 @@ textarea {
   align-items: center;
   line-height: 1;         
 }
+
+.carbuddy-response{
+  max-width: 80%;
+  background-color: #003256;
+  border-radius: 8px;
+  padding: 6px;
+  margin: 8px 4px;
+  font-weight: 300;
+  font-size: 13px;
+}
+
+.user-message{
+  max-width: 80%;
+  background-color: #112839;
+  border-radius: 8px;
+  padding: 6px;
+  margin: 8px 4px;
+  font-weight: 300;
+  margin-left: auto;
+  font-size: 13px;
+}
