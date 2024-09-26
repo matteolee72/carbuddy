@@ -1,5 +1,4 @@
 const body = document.querySelector("section.body");
-// `document.querySelector` may return null if the selector doesn't match anything.
 if (body) {
   fetch(chrome.runtime.getURL("components/index.html"))
     .then((r) => r.text())
@@ -32,14 +31,10 @@ function svgLoadingAnimationHandler() {
     ".condition-and-kbb-price-advisor-container"
   );
   const loaderWrapper = container.querySelector(".loader-wrapper");
-
-  // Function to show loader
   function showLoader() {
     console.log("Showing loader...");
     loaderWrapper.style.display = "flex";
   }
-
-  // Function to hide loader
   function hideLoader() {
     loaderWrapper.style.display = "none";
   }
@@ -50,7 +45,6 @@ function svgLoadingAnimationHandler() {
       if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
         console.log("SVG content added to kbb-price-advisor.");
         hideLoader();
-        // observer.disconnect(); // Stop observing after the child is added
       }
     }
   };
@@ -72,7 +66,6 @@ function svgLoadingAnimationHandler() {
 }
 
 function setZipCodeButton() {
-  // Get references to the input and button elements
   const zipCodeInput = document.querySelector(".zip-code-input");
   const submitButton = document.querySelector(".save-button");
 
@@ -84,14 +77,11 @@ function setZipCodeButton() {
     }
   });
 
-  // Add a click event listener to the button
   submitButton.addEventListener("click", function () {
-    // Get the value from the input field
     const zipCode = zipCodeInput.value;
 
     // Validate that the input is a number and has a length of 5 (assuming US ZIP code)
     if (/^\d{5}$/.test(zipCode)) {
-      // Save the ZIP code to chrome.storage.local
       chrome.storage.local
         .set({ zipCode: zipCode })
         .then(() => {
@@ -107,8 +97,6 @@ function setZipCodeButton() {
     }
   });
 }
-
-// retrieve attributes, set in storage (TODO future can change to just sending to service worker, no storage needed)
 
 const attrGroups = document.querySelectorAll(".attrgroup");
 
@@ -133,21 +121,18 @@ if (attrGroups.length > 0) {
         const labelSpan = attr.querySelector(".labl");
         const valueSpan = attr.querySelector(".valu");
         if (labelSpan && valueSpan) {
-          const label = labelSpan.textContent.trim().replace(/:$/, ""); // Extract label text
-          const value = valueSpan.textContent.trim(); // Extract value text
-          carDetails[label] = value; // Store data in object
+          const label = labelSpan.textContent.trim().replace(/:$/, "");
+          const value = valueSpan.textContent.trim();
+          carDetails[label] = value;
         }
       }
     });
-    allCarDetails.push(carDetails); // Add data for this group to the array
+    allCarDetails.push(carDetails);
     console.log("all car details: ", allCarDetails);
   });
-  // Store data in local storage using Chrome extension API
-  // TODO remove in the future
   chrome.storage.local.set({ allCarDetails }, () => {
     console.log("Car details stored in local storage!");
     chrome.runtime.sendMessage({ type: "carDetails", allCarDetails });
-    // send message to service-worker to inform that details are in storage (in the future can just send direct for less overhead)
   });
 } else {
   console.log('Element ".attrgroup" not found on this webpage.');
@@ -279,11 +264,9 @@ function insertConditionDropdown() {
   conditionTitle.setAttribute("class", "condition-title");
   conditionTitle.textContent = "Selected Condition";
 
-  // Create the select element (drop-down)
   const select = document.createElement("select");
   select.setAttribute("class", "condition-select");
 
-  // Create options for the drop-down
   const options = ["Fair", "Good", "Very Good", "Excellent"];
 
   options.forEach((option) => {
@@ -325,11 +308,9 @@ function insertBodyStylesList(styles) {
     ".condition-and-kbb-price-advisor-container"
   );
 
-  // Create a div element to contain the list
   const kbbContainer = document.createElement("div");
   kbbContainer.className = "body-styles-list-container";
 
-  // Create div elements for each style in the list
   styles.forEach((style) => {
     const styleDiv = document.createElement("div");
     styleDiv.textContent = style;
@@ -358,7 +339,6 @@ function insertBodyStylesList(styles) {
     kbbContainer.appendChild(styleDiv);
   });
 
-  // Append the container to an existing element in the HTML document
   const bodyStyleSelectTitle = document.createElement("h3");
   bodyStyleSelectTitle.className = "body-styles-select-title";
   bodyStyleSelectTitle.textContent = "Select Body Style";
