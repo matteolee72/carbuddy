@@ -260,7 +260,9 @@ async function run() {
     .then((r) => r.text())
     .then((html) => {
       console.log("hello inserting chat");
-      document.body.insertAdjacentHTML("beforeend", html); // extension html inserted, can manipulate AFTER this line
+      document.body.insertAdjacentHTML("beforeend", html);
+      minimizeButton();
+      sendButton();
     });
 
   const carDetails = await getCarDetails();
@@ -290,28 +292,52 @@ async function run() {
   const carIssuesText = parseCarIssues(response);
   if (carIssuesText) {
     console.log(carIssuesText);
+    conversation.push(
+      "This is the initial prompt that informs you about the specific car the user is interested in: " +
+        prompt
+    );
+    conversation.push(
+      "This is your response of the common issues this car faces: " +
+        carIssuesText
+    );
   } else {
     console.error("Failed to parse car issues.");
   }
 
   const issueDetails = extractIssueDetails(carIssuesText);
   console.log(issueDetails);
-  createIssues(issueDetails);
+  createIssues(issueDetails, carDetails);
 }
 
 run();
 
-function createIssues(issueDetails) {
-  const chatInsights = document.querySelector(".chat-insights");
+function minimizeButton() {
   const chatBody = document.querySelector(".chat-body");
   const chatHeader = document.querySelector(".chat-header");
+  const chatInputContainer = document.querySelector(".chat-input-container");
   const minimizeIcon = document.querySelector(".minimize-icon");
   chatHeader.addEventListener("click", () => {
     chatBody.style.display =
       chatBody.style.display === "none" ? "block" : "none";
+    chatInputContainer.style.display =
+      chatInputContainer.style.display === "none" ? "flex" : "none";
     minimizeIcon.textContent = minimizeIcon.textContent === "🔼" ? "🔽" : "🔼";
   });
+}
+
+function createIssues(issueDetails, carDetails) {
+  const chatInsights = document.querySelector(".chat-insights");
   let categories = [];
+
+  const carBuddyIntro = document.createElement("div");
+  carBuddyIntro.classList.add("carbuddy-response");
+  const yearMakeModel = `${carDetails[1]?.year} ${carDetails[1]?.makemodel}`;
+  carBuddyIntro.textContent =
+    "Hello! I'm Car Buddy. Here are some common issues a " +
+    yearMakeModel +
+    " like this might have. Feel free to ask me any additonal questions!";
+  chatInsights.appendChild(carBuddyIntro);
+
   for (issue of issueDetails) {
     if (!categories.includes(issue.Category)) {
       categories.push(issue.Category);
@@ -324,6 +350,9 @@ function createIssues(issueDetails) {
       issueCategory.appendChild(issueCategoryTitle);
 
       chatInsights.appendChild(issueCategory);
+    }
+    if (issue.Frequency == undefined || issue.Mileage == undefined) {
+      continue;
     }
 
     const chatIssue = document.createElement("div");
@@ -376,3 +405,77 @@ function hideLoader() {
   const loaderWrapper = chatBody.querySelector(".loader-wrapper");
   loaderWrapper.style.display = "none";
 }
+
+let conversation = [];
+
+const introPrompt = `
+you are Car Buddy, an AI car expert that advises the user on the specific car model 
+they are currently viewing. Here is the conversation you guys have had. Please answer 
+the following question whilst taking context from the past conversation.
+This is the start of the conversation. It is purely context for yourself:
+`;
+
+async function sendMessage() {
+  // if there is something in the text area that is not just spaces
+  const messageText = document.querySelector(".chat-input").value.trim();
+  if (messageText) {
+    const messagePrompt = generateMessagePrompt(
+      introPrompt,
+      conversation,
+      messageText
+    );
+    document.querySelector(".chat-input").value = "";
+    conversation.push("User asked: " + messageText);
+    const chatInsights = document.querySelector(".chat-insights");
+    const userMessage = document.createElement("div");
+    userMessage.classList.add("user-message");
+    userMessage.textContent = messageText;
+    chatInsights.appendChild(userMessage);
+    scrollToBottom();
+    const response = await fetchCarIssues(messagePrompt);
+    if (!response) {
+      console.error("Failed to get a response.");
+      return;
+    }
+    handleChatResponse(response);
+  }
+}
+
+function handleChatResponse(response) {
+  console.log(response.geminiData);
+  conversation.push("You responded: " + response.geminiData);
+  const chatInsights = document.querySelector(".chat-insights");
+  const carBuddyResponse = document.createElement("div");
+  carBuddyResponse.classList.add("carbuddy-response");
+  carBuddyResponse.textContent = response.geminiData;
+  chatInsights.appendChild(carBuddyResponse);
+  scrollToBottom();
+}
+
+function generateMessagePrompt(introPrompt, conversation, message) {
+  generatedMessage = introPrompt;
+  conversation.forEach((text) => {
+    generatedMessage = generatedMessage + "\n" + text;
+  });
+  generatedMessage =
+    generatedMessage +
+    "\nThis is the users question that you should respond to. Ensure your answer only has alphanumerics and punctuations. No special characters like '*' for formatting: " +
+    message;
+  // cut off from the back based on the max token length we want to allow.
+  return generatedMessage;
+}
+
+function sendButton() {
+  const sendButton = document.querySelector(".send-button");
+  sendButton.addEventListener("click", () => {
+    sendMessage();
+  });
+}
+
+function scrollToBottom() {
+  const chatBody = document.querySelector(".chat-body");
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+// TODO: make sure cant press send button unless while waiting for a response.
+// TODO: find a way to make it stop returning all the issues again in subsequent responses.
