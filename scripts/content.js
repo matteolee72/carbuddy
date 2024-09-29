@@ -32,7 +32,6 @@ function svgLoadingAnimationHandler() {
   );
   const loaderWrapper = container.querySelector(".loader-wrapper");
   function showLoader() {
-    console.log("Showing loader...");
     loaderWrapper.style.display = "flex";
   }
   function hideLoader() {
@@ -43,7 +42,6 @@ function svgLoadingAnimationHandler() {
   const mutationCallback = function (mutationsList, observer) {
     for (let mutation of mutationsList) {
       if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
-        console.log("SVG content added to kbb-price-advisor.");
         hideLoader();
       }
     }
@@ -59,7 +57,6 @@ function svgLoadingAnimationHandler() {
       event.propertyName === "height" &&
       container.classList.contains("expanded")
     ) {
-      console.log("Transition ended. Property:", event.propertyName);
       showLoader();
     }
   });
@@ -72,7 +69,6 @@ function setZipCodeButton() {
   chrome.storage.local.get("zipCode").then((result) => {
     const zipCode = result.zipCode ? result.zipCode : "";
     if (zipCode !== "") {
-      console.log("zipcode exists");
       zipCodeInput.placeholder = "Current ZIP Code: " + zipCode;
     }
   });
@@ -85,7 +81,6 @@ function setZipCodeButton() {
       chrome.storage.local
         .set({ zipCode: zipCode })
         .then(() => {
-          console.log("ZIP Code is set to " + zipCode);
           submitButton.style.backgroundColor = "#ccc";
           submitButton.textContent = "Saved";
         })
@@ -108,7 +103,6 @@ if (attrGroups.length > 0) {
   attrGroups.forEach((attrGroup) => {
     const carDetails = {}; // Object to store data for each group
     const attributeElements = attrGroup.querySelectorAll(".attr");
-    console.log(attributeElements);
     attributeElements.forEach((attr) => {
       if (attr.classList.contains("important")) {
         const yearSpan = attr.querySelector(".year");
@@ -128,14 +122,11 @@ if (attrGroups.length > 0) {
       }
     });
     allCarDetails.push(carDetails);
-    console.log("all car details: ", allCarDetails);
   });
   chrome.storage.local.set({ allCarDetails }, () => {
-    console.log("Car details stored in local storage!");
     chrome.runtime.sendMessage({ type: "carDetails", allCarDetails });
   });
 } else {
-  console.log('Element ".attrgroup" not found on this webpage.');
 }
 
 function processCarYearMakeModelString(allCarDetails) {
@@ -163,13 +154,10 @@ let processedData = [];
 
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === "processedData") {
-    console.log("processedData has been received");
     processedData = message.allCarDetails;
-    console.log(processedData);
     updateWithProcessedData(processedData);
   }
   if (message.type === "svgContent") {
-    console.log("received message to set svgContent");
     svgContent = message.svgContent;
     document.querySelector("#kbb-price-advisor").innerHTML = svgContent;
     const bodyStylesContainer = document.querySelector(
@@ -236,10 +224,8 @@ chrome.runtime.onMessage.addListener((message) => {
           percentageElement.style.color = "red";
         }
       } else {
-        console.log("No text element found in the range box.");
       }
     } else {
-      console.log("Range box element not found in the SVG.");
     }
     updateWithProcessedData(processedData);
   }
@@ -254,7 +240,6 @@ chrome.runtime.onMessage.addListener((message) => {
     bodyStyle = message.bodyStyle;
   }
   if (message.type === "errorFetchingBodyStyles") {
-    console.log("error fetching body styles from kbb");
     handleErrorFetchingBodyStyles();
   }
 });
@@ -323,8 +308,6 @@ function insertBodyStylesList(styles) {
       addSkeletonClass();
       extensionContainer.classList.add("expanded");
       bodyStyle = style;
-      console.log(styleDiv.textContent);
-      console.log("style selected is: ", style);
       chrome.runtime.sendMessage({ type: "selectedBodyStyle", style });
       existingContainer.classList.add("removed");
     };
@@ -350,7 +333,6 @@ function insertBodyStylesList(styles) {
 function updateWithProcessedData(processedData) {
   removeSkeletonClass();
   const priceElement = document.querySelector(".listed-price");
-  console.log("priceElement: ", priceElement);
   const conditionElement = document.querySelector(".listed-condition");
   priceElement.textContent = processedData[0].price;
   conditionElement.textContent = processedData[2].condition

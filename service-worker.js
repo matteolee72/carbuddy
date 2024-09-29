@@ -10,7 +10,6 @@ let carDetailsCount = 0;
 async function sendKbbHtmlToOffscreenDocument(type, data) {
   // Create an offscreen document if one doesn't exist yet
   if (!(await hasDocument())) {
-    console.log("no offscreen document, creating one now");
     await chrome.offscreen.createDocument({
       url: OFFSCREEN_DOCUMENT_PATH,
       reasons: [chrome.offscreen.Reason.DOM_PARSER],
@@ -18,7 +17,6 @@ async function sendKbbHtmlToOffscreenDocument(type, data) {
     });
   }
 
-  console.log("sending message to offscreen document now, type is:", type);
   chrome.runtime.sendMessage({
     type,
     target: "offscreen",
@@ -30,16 +28,13 @@ async function sendKbbHtmlToOffscreenDocument(type, data) {
 async function handleMessages(message) {
   switch (message.type) {
     case "svg-object-url-result":
-      console.log("svg url retrieved");
       handleSvgObjectUrlResult(message.data);
       closeOffscreenDocument();
       break;
     case "body-styles-result":
-      console.log("body styles retrieved");
       handleBodyStylesResult(message.data);
       break;
     case "selectedBodyStyle":
-      console.log("body style selected is:", message.style);
       const kbbHtmlFinal = await fetchHtmlDataFromKbbBodyStyleSelected(
         message.style
       );
@@ -49,7 +44,6 @@ async function handleMessages(message) {
       );
       break;
     case "selectedCondition":
-      console.log("condition is", message.condition);
       const kbbHtmlConditionSelected =
         await fetchHtmlDataFromKbbConditionSelected(
           message.condition,
@@ -61,26 +55,22 @@ async function handleMessages(message) {
       );
       break;
     case "carDetails":
-      console.log(message);
       // chrome.storage.local.get('allCarDetails', async (data) => {
       // allCarDetails = data.allCarDetails || []; // Handle potential absence of data
       allCarDetails = message.allCarDetails || [];
       carDetailsCount = carDetailsCount + 1;
-      console.log(carDetailsCount);
       parameters.mileage = allCarDetails[2].odometer;
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id, {
           type: "processedData",
           allCarDetails,
         });
-        console.log("processedData has been sent");
       });
       const kbbHtml = await fetchHtmlDataFromKbbStyles(allCarDetails);
       // if kbbHtml = select body style, handleSelectBodyStyle
       // else send to offscreen document
       await sendKbbHtmlToOffscreenDocument("retrieve-svg-object-url", kbbHtml);
     default:
-      console.log("error encountered");
       console.warn(`Unexpected message type received: '${message.type}'.`);
   }
 }
@@ -94,8 +84,6 @@ async function fetchHtmlDataFromKbbStyles(allCarDetails) {
     const baseUrl = url.concat(makeModel, "/", year, "/", "styles/");
     const searchParams = new URLSearchParams(parameters);
     const fullUrl = `${baseUrl}?${searchParams.toString()}`;
-    console.log(fullUrl);
-    console.log(allCarDetails);
     const response = await fetch(fullUrl, {
       headers: {
         "Cache-Control": "no-cache",
@@ -117,7 +105,6 @@ async function fetchHtmlDataFromKbbStyles(allCarDetails) {
     console.error("Error fetching body styles data:", error);
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { type: "errorFetchingBodyStyles" });
-      console.log("error fetching body styles from kbb");
     });
     return null;
   }
@@ -125,7 +112,6 @@ async function fetchHtmlDataFromKbbStyles(allCarDetails) {
 
 async function fetchHtmlDataFromKbbBodyStyleSelected(style) {
   try {
-    console.log("fetching data with style selected: ", style);
     const url = "https://www.kbb.com/";
     const makeModel = getMakeModel(allCarDetails);
     const year = allCarDetails[1].year;
@@ -142,12 +128,9 @@ async function fetchHtmlDataFromKbbBodyStyleSelected(style) {
     const res = await chrome.storage.local.get("zipCode");
     const zipCode = res.zipCode ? res.zipCode : "";
     if (zipCode !== "") {
-      console.log("setting zipcode now!!!", zipCode);
       searchParams.set("zipcode", zipCode);
     }
     const fullUrl = `${baseUrl}?${searchParams.toString()}`;
-    console.log("fullURL is:", fullUrl);
-    console.log(allCarDetails);
     const response = await fetch(fullUrl);
     const kbbHtml = await response.text();
 
@@ -170,7 +153,6 @@ async function fetchHtmlDataFromKbbBodyStyleSelected(style) {
 async function fetchHtmlDataFromKbbConditionSelected(condition, style) {
   try {
     const conditionString = condition.toLowerCase().replace(/\s+/g, "-");
-    console.log("conditionString:", conditionString);
     const url = "https://www.kbb.com/";
     const makeModel = getMakeModel(allCarDetails);
     const year = allCarDetails[1].year;
@@ -188,12 +170,9 @@ async function fetchHtmlDataFromKbbConditionSelected(condition, style) {
     const res = await chrome.storage.local.get("zipCode");
     const zipCode = res.zipCode ? res.zipCode : "";
     if (zipCode !== "") {
-      console.log("setting zipcode now!!!", zipCode);
       searchParams.set("zipcode", zipCode);
     }
     const fullUrl = `${baseUrl}?${searchParams.toString()}`;
-    console.log("fullURL is:", fullUrl);
-    console.log(allCarDetails);
     const response = await fetch(fullUrl);
     const kbbHtml = await response.text();
 
@@ -214,16 +193,13 @@ async function handleSelectBodyStyle(document) {
 async function handleOptionsNotRequired(response) {
   // Get the final URL from the response headers
   const finalURL = response.url;
-  console.log("Final URL after redirection:", finalURL);
   if (finalURL == "https://www.kbb.com/car-prices/") {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { type: "errorFetchingBodyStyles" });
-      console.log("error fetching body styles from kbb");
     });
     return;
   }
   const modifiedURL = transformURLFirstCase(finalURL);
-  console.log("modified URL from first case:" + modifiedURL);
   const kbbHtmlFinal = await fetchHtmlDataFromKbbDirect(modifiedURL);
 
   const bodyStyle = extractBodyStyle(modifiedURL);
@@ -242,21 +218,17 @@ const parameters = {
 };
 
 async function handleBodyStylesResult(bodyStyles) {
-  console.log(bodyStyles);
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { type: "bodyStyles", bodyStyles });
-    console.log("bodyStyles has been sent");
   });
 }
 
 async function handleSvgObjectUrlResult(svgUrl) {
-  console.log("Received svg object url", svgUrl);
   fetch(svgUrl)
     .then((response) => response.text())
     .then((svgContent) => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id, { type: "svgContent", svgContent });
-        console.log("svgContent has been sent");
       });
     })
     .catch((error) => {
@@ -290,9 +262,7 @@ fetch(
     if (response.redirected) {
       // Get the final URL from the response headers
       const finalURL = response.url;
-      console.log("Final URL 2nd case:", finalURL);
     } else {
-      console.log("not redirected, 2nd case");
     }
   })
   .catch((error) => {
@@ -308,9 +278,7 @@ fetch(
     if (response.redirected) {
       // Get the final URL from the response headers
       const finalURL = response.url;
-      console.log("Final URL 3nd case:", finalURL);
     } else {
-      console.log("not redirected, 3rd case");
     }
   })
   .catch((error) => {
@@ -358,17 +326,13 @@ function transformURLFirstCase(inputURL) {
 
 async function fetchHtmlDataFromKbbDirect(url) {
   try {
-    console.log("setting from KBB Direct");
     const res = await chrome.storage.local.get("zipCode");
     const zipCode = res.zipCode ? res.zipCode : "";
     if (zipCode !== "") {
-      console.log("setting zipcode now!!!", zipCode);
       const zipCodeParam = "&zipcode=" + zipCode;
       url += zipCodeParam;
     }
     const fullUrl = url;
-    console.log("fullURL via Direct is:", fullUrl);
-    console.log(allCarDetails);
     const response = await fetch(fullUrl);
     const kbbHtml = await response.text();
     if (!response.ok) {

@@ -2,7 +2,6 @@ async function getCarDetails() {
   try {
     const carDetails = await chrome.storage.local.get("allCarDetails");
     const allCarDetails = carDetails.allCarDetails || [];
-    console.log("Car details retrieved:", allCarDetails);
     return allCarDetails;
   } catch (error) {
     console.error("Error retrieving car details:", error);
@@ -62,7 +61,6 @@ async function fetchCarIssues(prompt) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching car issues:", error);
@@ -88,9 +86,7 @@ function extractIssueDetails(text) {
   const issueRegex_3 = /.?\-\s/;
 
   let currentCategory = lines[0];
-  console.log(currentCategory);
   currentCategory = currentCategory.replace(/^\*\*|\*\*$/g, "").trim();
-  console.log(currentCategory);
 
   lines.forEach((line) => {
     line = line.trim();
@@ -175,7 +171,6 @@ function extractIssueDetails(text) {
 
 function parseIssues(text) {
   const issueCategories = text.split("\n\n**").slice(); // Split text into sections by category
-  console.log(issueCategories);
   const issues = [];
 
   issueCategories.forEach((categorySection) => {
@@ -184,7 +179,6 @@ function parseIssues(text) {
       .replace(/^[^A-Za-z]+/, "")
       .replace("**", "")
       .trim(); // Clean up the category title
-    console.log(category);
 
     issueLines.forEach((issueLine) => {
       const issueMatch = issueLine.match(
@@ -259,7 +253,6 @@ async function run() {
   await fetch(chrome.runtime.getURL("components/chat.html"))
     .then((r) => r.text())
     .then((html) => {
-      console.log("hello inserting chat");
       document.body.insertAdjacentHTML("beforeend", html);
       minimizeButton();
       sendButton();
@@ -281,7 +274,6 @@ async function run() {
   }
 
   const prompt = generateCarIssuePrompt(price, yearMakeModel, odometer);
-  console.log("Generated Prompt:", prompt);
 
   const response = await fetchCarIssues(prompt);
   if (!response) {
@@ -291,7 +283,6 @@ async function run() {
 
   const carIssuesText = parseCarIssues(response);
   if (carIssuesText) {
-    console.log(carIssuesText);
     conversation.push(
       "This is the initial prompt that informs you about the specific car the user is interested in: " +
         prompt
@@ -305,7 +296,6 @@ async function run() {
   }
 
   const issueDetails = extractIssueDetails(carIssuesText);
-  console.log(issueDetails);
   createIssues(issueDetails, carDetails);
 }
 
@@ -442,7 +432,6 @@ async function sendMessage() {
 }
 
 function handleChatResponse(response) {
-  console.log(response.geminiData);
   conversation.push("You responded: " + response.geminiData);
   const chatInsights = document.querySelector(".chat-insights");
   const carBuddyResponse = document.createElement("div");

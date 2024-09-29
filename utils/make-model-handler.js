@@ -10,7 +10,6 @@ const carMakeMap = {
 export function getMakeModel(allCarDetails) {
   const make = allCarDetails[1].makemodel.split(" ")[0].toLowerCase();
   const model = allCarDetails[1].makemodel.split(" ")[1];
-  console.log(model);
 
   let normalizedMake = carMakeMap[make] || make;
   let normalizedModel;
@@ -51,12 +50,10 @@ export function getMakeModel(allCarDetails) {
           lexusModel += char;
         }
       }
-      console.log(lexusModel);
       normalizedModel = lexusModel;
       break;
     default:
       normalizedModel = model;
-      console.log("No special handling required for: ", normalizedMake);
       break;
   }
 
