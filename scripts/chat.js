@@ -335,7 +335,7 @@ function createIssues(issueDetails, carDetails) {
   carBuddyIntro.textContent =
     "Hello! I'm Car Buddy. Here are some common issues a " +
     yearMakeModel +
-    " like this might have. Feel free to ask me any additonal questions!";
+    " like this might have. Feel free to ask me any additional questions!";
   chatInsights.appendChild(carBuddyIntro);
 
   for (issue of issueDetails) {
